@@ -2,12 +2,12 @@
 
 #include "SuperLightBoyGameModeBase.h"
 
-#include "Character/SuperLightBoyCharacter.h"
+#include "Character/BluePieceOfShit.h"
 #include "UObject/ConstructorHelpers.h"
 
 //static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/SideScrollerCPP/Blueprints/SideScrollerCharacter"));
 
 ASuperLightBoyGameModeBase::ASuperLightBoyGameModeBase()
 {
-	DefaultPawnClass = ASuperLightBoyCharacter::StaticClass();
+	DefaultPawnClass = ABluePieceOfShit::StaticClass();
 }

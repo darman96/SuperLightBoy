@@ -20,7 +20,7 @@ ABluePieceOfShit::ABluePieceOfShit()
 
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 25.f);
 
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
+	/*CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->bAbsoluteRotation = true;
 	CameraBoom->bUsePawnControlRotation = false;
@@ -30,7 +30,7 @@ ABluePieceOfShit::ABluePieceOfShit()
 
 	SideViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Side View Camera"));
 	SideViewCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	SideViewCamera->bUsePawnControlRotation = false;
+	SideViewCamera->bUsePawnControlRotation = false;*/
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
