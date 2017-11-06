@@ -15,11 +15,15 @@ public:
 
 	ABluePieceOfShit();
 
+	virtual void BeginPlay() override;
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	void OnHitWall(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void OnWallCollisionEnter(AActor* overlappedActor, AActor* other);
+	UFUNCTION(BlueprintCallable)
+	void OnWallCollisionExit(AActor* overlappedActor, AActor* other);
 
 private:
 
@@ -38,5 +42,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = WallJump, meta = (AllowPrivateAccess = "true"))
 	class UBoxComponent* WallCollisionBox;
+
+private:
+
+	bool allowWallJump;
 
 };

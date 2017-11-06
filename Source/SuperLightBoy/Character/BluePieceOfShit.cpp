@@ -2,6 +2,7 @@
 
 #include "BluePieceOfShit.h"
 
+#include "Engine.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -18,19 +19,21 @@ ABluePieceOfShit::ABluePieceOfShit()
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
 
+	bGenerateOverlapEventsDuringLevelStreaming = true;
+
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 25.f);
 
-	/*CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("Camera Boom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->bAbsoluteRotation = true;
 	CameraBoom->bUsePawnControlRotation = false;
 	CameraBoom->bDoCollisionTest = false;
 	CameraBoom->TargetArmLength = 500.0f;
-	CameraBoom->RelativeRotation = FRotator(0.f, -90.f, 0.f);
+	CameraBoom->RelativeRotation = FRotator(-15.f, -90.f, 0.f);
 
 	SideViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Side View Camera"));
 	SideViewCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	SideViewCamera->bUsePawnControlRotation = false;*/
+	SideViewCamera->bUsePawnControlRotation = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
@@ -43,10 +46,19 @@ ABluePieceOfShit::ABluePieceOfShit()
 
 	// Setup Wall Collision
 	WallCollisionBox = CreateDefaultSubobject<UBoxComponent>("WallCollisionBox");
-	WallCollisionBox->InitBoxExtent(FVector(10.f, 30.f, 30.f));
-	WallCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	WallCollisionBox->OnComponentBeginOverlap.AddDynamic(this, &ABluePieceOfShit::OnHitWall);
+	WallCollisionBox->InitBoxExtent(FVector(15.f, 30.f, 30.f));
+	WallCollisionBox->SetRelativeLocation(FVector(15.f, 0.f, 0.f));
+	WallCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 
+	allowWallJump = false;
+}
+
+void ABluePieceOfShit::BeginPlay()
+{
+	Super::BeginPlay();
+
+	OnActorBeginOverlap.AddDynamic(this, &ABluePieceOfShit::OnWallCollisionEnter);
+	OnActorEndOverlap.AddDynamic(this, &ABluePieceOfShit::OnWallCollisionExit);
 }
 
 // Called to bind functionality to input
@@ -62,12 +74,30 @@ void ABluePieceOfShit::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void ABluePieceOfShit::JumpPressed()
 {
-	Jump();
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		Jump();
+		return;
+	}
+	else
+	{
+		if (allowWallJump)
+		{
+			GetCharacterMovement()->Launch(FVector(-300.f, 0.f, 1000.f));
+		}
+	}
 }
 
 void ABluePieceOfShit::JumpReleased()
 {
-	StopJumping();
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		StopJumping();
+		return;
+	}
+	else
+	{
+	}
 }
 
 void ABluePieceOfShit::MoveRight(float value)
@@ -75,7 +105,12 @@ void ABluePieceOfShit::MoveRight(float value)
 	AddMovementInput(FVector(1.f, 0.f, 0.f), value);
 }
 
-void ABluePieceOfShit::OnHitWall(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ABluePieceOfShit::OnWallCollisionEnter(AActor* overlappedActor, AActor* other)
 {
-	UE_LOG(LogTemp, Display, TEXT("Collision With Wall!!!!!!!"));
+	allowWallJump = true;
+}
+
+void ABluePieceOfShit::OnWallCollisionExit(AActor* overlappedActor, AActor* other)
+{
+	allowWallJump = false;
 }
