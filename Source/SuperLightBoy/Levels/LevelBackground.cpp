@@ -28,10 +28,10 @@ void ALevelBackground::BeginPlay()
 	FVector characterPos = characterReference->GetActorLocation();
 	FVector levelExtends = levelReference->LevelExtends;
 
-	FVector newBackgroundPos;
+	FVector newBackgroundPos = GetActorLocation();
 
 	newBackgroundPos.X = FMath::Clamp(characterPos.X * 0.25f, -levelExtends.X, levelExtends.X);
-	newBackgroundPos.Y = FMath::Clamp(characterPos.Y * 0.25f, -levelExtends.Y, levelExtends.Y);
+	newBackgroundPos.Z = FMath::Clamp(characterPos.Z * 0.25f, -levelExtends.Z, levelExtends.Z);
 
 	SetActorLocation(newBackgroundPos);
 }

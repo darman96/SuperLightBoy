@@ -44,12 +44,6 @@ ABluePieceOfShit::ABluePieceOfShit()
 	GetCharacterMovement()->MaxWalkSpeed = 600.f;
 	GetCharacterMovement()->MaxFlySpeed = 600.f;
 
-	// Setup Wall Collision
-	WallCollisionBox = CreateDefaultSubobject<UBoxComponent>("WallCollisionBox");
-	WallCollisionBox->InitBoxExtent(FVector(15.f, 30.f, 30.f));
-	WallCollisionBox->SetRelativeLocation(FVector(15.f, 0.f, 0.f));
-	WallCollisionBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
 	allowWallJump = false;
 }
 
@@ -59,6 +53,13 @@ void ABluePieceOfShit::BeginPlay()
 
 	OnActorBeginOverlap.AddDynamic(this, &ABluePieceOfShit::OnWallCollisionEnter);
 	OnActorEndOverlap.AddDynamic(this, &ABluePieceOfShit::OnWallCollisionExit);
+}
+
+void ABluePieceOfShit::Tick(float DeltaTime)
+{
+	FVector location = GetActorLocation();
+	location.Y = 0.f;
+	SetActorLocation(location);
 }
 
 // Called to bind functionality to input
